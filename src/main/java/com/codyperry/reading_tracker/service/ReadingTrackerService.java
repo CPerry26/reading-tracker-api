@@ -1,17 +1,19 @@
 package com.codyperry.reading_tracker.service;
 
+import com.codyperry.reading_tracker.dto.BookDTO;
 import com.codyperry.reading_tracker.dto.CreateBookRequest;
-import com.codyperry.reading_tracker.dto.CreateBookResponse;
 import com.codyperry.reading_tracker.dto.UpdateProgressRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public interface ReadingTrackerService {
-    CreateBookResponse createNewBook(CreateBookRequest newBook);
+    BookDTO createNewBook(CreateBookRequest newBook);
 
-    void getTrackedBooks();
+    List<BookDTO> getTrackedBooks();
 
-    void getReadingStats();
+    List<BookDTO> getReadingStats();
 
-    void updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest);
+    BookDTO updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest);
 }
