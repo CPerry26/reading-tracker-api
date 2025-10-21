@@ -6,29 +6,22 @@ package com.codyperry.reading_tracker.dto;
  * setters to achieve the same general idea.
  */
 public class UpdateProgressRequest {
-    private long bookId;
-    private int pagesRead;
-    private double percentComplete;
+    private Integer pagesRead;
+    private Double percentComplete;
 
-    public UpdateProgressRequest(long id, int pagesRead) {
-        this.bookId = id;
+    public UpdateProgressRequest(int pagesRead) {
         this.pagesRead = pagesRead;
     }
 
-    public UpdateProgressRequest(long id, double percentComplete) {
-        this.bookId = id;
+    public UpdateProgressRequest(double percentComplete) {
         this.percentComplete = percentComplete;
     }
 
-    public long getBookId() {
-        return bookId;
-    }
-
-    public int getPagesRead() {
+    public Integer getPagesRead() {
         return pagesRead;
     }
 
-    public double getPercentComplete() {
+    public Double getPercentComplete() {
         return percentComplete;
     }
 }
