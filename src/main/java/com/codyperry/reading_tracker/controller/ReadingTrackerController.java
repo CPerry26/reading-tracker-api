@@ -6,6 +6,7 @@ import com.codyperry.reading_tracker.dto.CreateBookResponse;
 import com.codyperry.reading_tracker.dto.UpdateProgressRequest;
 import com.codyperry.reading_tracker.dto.UpdateProgressResponse;
 import com.codyperry.reading_tracker.service.ReadingTrackerService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -42,8 +43,8 @@ public class ReadingTrackerController {
         return this.readingTrackerService.getReadingStats();
     }
 
-    @PatchMapping("/{id}")
-    public UpdateProgressResponse updateProgress(@PathVariable long bookId, @RequestBody UpdateProgressRequest updateProgressRequest) {
+    @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public UpdateProgressResponse updateProgress(@PathVariable(name = "id") long bookId, @RequestBody UpdateProgressRequest updateProgressRequest) {
         BookDTO bookDTO = this.readingTrackerService.updateTrackedProgress(bookId, updateProgressRequest);
 
         return new UpdateProgressResponse(

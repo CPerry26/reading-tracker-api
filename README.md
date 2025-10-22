@@ -18,3 +18,7 @@ mvn -N io.takari:maven:wrapper
 ```
 
 To start, please run a `./mvnw install` to install all necessary dependencies before attempting to run the project.
+
+After installation, run `./mvnw spring-boot:run`. You can then make requests in a tool like Postman to `http://localhost:8080/books*`.
+
+Please note, the repository is currently configured to recreate the DB on each run, so changes are not persisted across runs.
