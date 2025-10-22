@@ -5,11 +5,13 @@ import com.codyperry.reading_tracker.dto.CreateBookRequest;
 import com.codyperry.reading_tracker.dto.UpdateProgressRequest;
 import com.codyperry.reading_tracker.entity.Book;
 import com.codyperry.reading_tracker.repository.TrackerRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Service
 public class ReadingTrackerServiceImpl implements ReadingTrackerService {
     private final TrackerRepository trackerRepository;
 
@@ -39,18 +41,19 @@ public class ReadingTrackerServiceImpl implements ReadingTrackerService {
     public BookDTO updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest) {
         Optional<Book> existingBook = this.trackerRepository.findById(bookId);
 
-        // No existing book, create it.
+        // No existing book, error.
         if (!existingBook.isPresent()) {
-
+            // TODO: This should return a 404.
+            return null;
         }
 
         Book book = existingBook.get();
 
         // If we got pages read, update that. Otherwise, find the pages read by multiplying total pages by the percent complete.
-        if (updateProgressRequest.getPagesRead() != null) {
-            book.setPages(updateProgressRequest.getPagesRead());
+        if (updateProgressRequest.getPagesRead().isPresent()) {
+            book.setPagesRead(updateProgressRequest.getPagesRead().get());
         } else {
-            book.setPages((int) updateProgressRequest.getPercentComplete().doubleValue() * book.getPages());
+            book.setPagesRead((int) updateProgressRequest.getPercentComplete().get().doubleValue() * book.getPages());
         }
 
         return this.convertToDTO(this.trackerRepository.save(book));
