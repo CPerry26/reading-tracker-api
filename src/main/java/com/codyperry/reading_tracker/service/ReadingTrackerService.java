@@ -6,6 +6,7 @@ import com.codyperry.reading_tracker.dto.UpdateProgressRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public interface ReadingTrackerService {
@@ -15,5 +16,5 @@ public interface ReadingTrackerService {
 
     List<BookDTO> getReadingStats();
 
-    BookDTO updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest);
+    Optional<BookDTO> updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest);
 }

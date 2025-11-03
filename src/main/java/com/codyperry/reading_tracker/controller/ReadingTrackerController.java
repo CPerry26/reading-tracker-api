@@ -6,7 +6,11 @@ import com.codyperry.reading_tracker.dto.CreateBookResponse;
 import com.codyperry.reading_tracker.dto.UpdateProgressRequest;
 import com.codyperry.reading_tracker.dto.UpdateProgressResponse;
 import com.codyperry.reading_tracker.service.ReadingTrackerService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/books")
@@ -27,7 +32,7 @@ public class ReadingTrackerController {
     }
 
     @PostMapping
-    public CreateBookResponse createTrackedBook(@RequestBody CreateBookRequest newBook) {
+    public CreateBookResponse createTrackedBook(@Valid @RequestBody CreateBookRequest newBook) {
         BookDTO bookDTO = this.readingTrackerService.createNewBook(newBook);
 
         return new CreateBookResponse(bookDTO.id(), bookDTO.name(), bookDTO.author(), bookDTO.pages());
@@ -44,14 +49,28 @@ public class ReadingTrackerController {
     }
 
     @PatchMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UpdateProgressResponse updateProgress(@PathVariable(name = "id") long bookId, @RequestBody UpdateProgressRequest updateProgressRequest) {
-        BookDTO bookDTO = this.readingTrackerService.updateTrackedProgress(bookId, updateProgressRequest);
+    public ResponseEntity<UpdateProgressResponse> updateProgress(@Min(1) @PathVariable(name = "id") long bookId, @RequestBody UpdateProgressRequest updateProgressRequest) {
+        if (!updateProgressRequest.getPagesRead().isPresent() && !updateProgressRequest.getPercentComplete().isPresent()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        return new UpdateProgressResponse(
-                bookDTO.id(),
-                bookDTO.name(),
-                bookDTO.author(),
-                (double) bookDTO.pagesRead() / bookDTO.pages()
-        );
+        Optional<BookDTO> bookDTO = this.readingTrackerService.updateTrackedProgress(bookId, updateProgressRequest);
+
+        if (!bookDTO.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        BookDTO bookProgress = bookDTO.get();
+
+        // Convert the pages read into a whole number percentage.
+        double percent = (Double.valueOf(bookProgress.pagesRead()) / Double.valueOf(bookProgress.pages()));
+        int percentComplete = (int) (percent * 100);
+
+        return new ResponseEntity<>(new UpdateProgressResponse(
+                bookProgress.id(),
+                bookProgress.name(),
+                bookProgress.author(),
+                percentComplete
+        ), HttpStatus.OK);
     }
 }
