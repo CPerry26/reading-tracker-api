@@ -52,7 +52,8 @@ public class ReadingTrackerServiceImpl implements ReadingTrackerService {
         if (updateProgressRequest.getPagesRead().isPresent()) {
             book.setPagesRead(updateProgressRequest.getPagesRead().get());
         } else {
-            book.setPagesRead((int) updateProgressRequest.getPercentComplete().get().doubleValue() * book.getPages());
+            int pagesRead = (int) (updateProgressRequest.getPercentComplete().get().doubleValue() * book.getPages());
+            book.setPagesRead(pagesRead);
         }
 
         return Optional.of(this.convertToDTO(this.trackerRepository.save(book)));
