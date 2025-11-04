@@ -1,4 +1,7 @@
 package com.codyperry.reading_tracker.dto;
 
-public record CreateBookRequest(String name, String author, int pages) {
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
+public record CreateBookRequest(@NotNull String name, @NotNull String author, @Min(1) int pages) {
 }

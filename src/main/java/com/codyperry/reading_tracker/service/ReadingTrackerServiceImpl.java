@@ -38,13 +38,12 @@ public class ReadingTrackerServiceImpl implements ReadingTrackerService {
     }
 
     @Override
-    public BookDTO updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest) {
+    public Optional<BookDTO> updateTrackedProgress(long bookId, UpdateProgressRequest updateProgressRequest) {
         Optional<Book> existingBook = this.trackerRepository.findById(bookId);
 
         // No existing book, error.
         if (!existingBook.isPresent()) {
-            // TODO: This should return a 404.
-            return null;
+            return Optional.empty();
         }
 
         Book book = existingBook.get();
@@ -53,10 +52,11 @@ public class ReadingTrackerServiceImpl implements ReadingTrackerService {
         if (updateProgressRequest.getPagesRead().isPresent()) {
             book.setPagesRead(updateProgressRequest.getPagesRead().get());
         } else {
-            book.setPagesRead((int) updateProgressRequest.getPercentComplete().get().doubleValue() * book.getPages());
+            int pagesRead = (int) (updateProgressRequest.getPercentComplete().get().doubleValue() * book.getPages());
+            book.setPagesRead(pagesRead);
         }
 
-        return this.convertToDTO(this.trackerRepository.save(book));
+        return Optional.of(this.convertToDTO(this.trackerRepository.save(book)));
     }
 
     private Book convertToModel(BookDTO bookDTO) {

@@ -1,7 +1,5 @@
 package com.codyperry.reading_tracker.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Optional;
 
 /**
@@ -13,7 +11,10 @@ public class UpdateProgressRequest {
     private Optional<Integer> pagesRead;
     private Optional<Double> percentComplete;
 
-    public UpdateProgressRequest() {}
+    public UpdateProgressRequest() {
+        this.pagesRead = Optional.empty();
+        this.percentComplete = Optional.empty();
+    }
 
     public Integer setPagesRead(int pagesRead) {
         this.pagesRead = Optional.of(pagesRead);
