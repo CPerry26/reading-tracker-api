@@ -7,6 +7,9 @@ This project implements a reading tracker API, allowing a reader to track their 
 * Spring Boot
 * Spring Data JPA
 * SQLite
+* JUnit
+* Mockito
+* H2
 
 ## Goals
 This project serves as exploration into using SQLite and JPA to further my Java skills with Spring Boot and the Java persistence layer.
@@ -22,3 +25,7 @@ To start, please run a `./mvnw install` to install all necessary dependencies be
 After installation, run `./mvnw spring-boot:run`. You can then make requests in a tool like Postman to `http://localhost:8080/books*`.
 
 Please note, the repository is currently configured to recreate the DB on each run, so changes are not persisted across runs.
+
+### Tests
+
+There are tests defined for each layer using JUnit, Mockito, and Spring Boot tests. These are run during the `install` step, but can also be run manually using `./mvnw test`. All tests are passing.
